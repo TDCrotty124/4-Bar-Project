@@ -27,7 +27,7 @@ class Fourbar:
         self.linestyle = []
         self.connections = []
         self.payload = []
-        self.positions = None
+        self.positions = []
         self.boundary = []
         self.window = [] # an empty list of nodes
         # self.links = [] # an empty list of links
@@ -57,27 +57,45 @@ class Fourbar:
                 self.linestyle.append(this_name)
 
             if keyword == 'payload':
-                this_load = [cells[1].replace("'", "").replace(" ", "")]
+                this_name = [cells[1].replace("'", "").replace(" ", "")]
                 ncells = len(cells)
-                for cell in cells[2:]:
+                for cell in cells[3:]:
                     value = float(cell.replace("(", "").replace(")", ""))
                     this_name.append(value)
-                self.linestyle.append(this_name)
+                self.payload.append(this_name)
+
+            if keyword == 'positions':
+                for pos in cells[2:]:
+                    ans = float(pos.replace("(", "").replace(")", ""))
+                    self.positions.append(ans)
+
+            if keyword == 'boundary':
+                this_name = [cells[1].replace("'", "").replace(" ", "")]
+                ncells = len(cells)
+                for cell in cells[3:]:
+                    value = float(cell.replace("(", "").replace(")", ""))
+                    this_name.append(value)
+                self.boundary.append(this_name)
+
+            if keyword == 'window':
+                for win in cells[2:]:
+                    ans = float(win.replace("(", "").replace(")", ""))
+                    self.positions.append(ans)
 
 
-            if keyword == 'node':
-                thisnode=Node()
-                thisnode.name = cells[1].strip()
-                thisnode.x=float(cells[2].strip())
-                thisnode.y=float(cells[3].strip())
-                self.nodes.append(thisnode)
-
-            if keyword == 'link':
-                thislink = Link()
-                thislink.name = cells[1].strip()
-                thislink.node1name= cells[2].strip()
-                thislink.node2name= cells[3].strip()
-                self.links.append(thislink)
+            # if keyword == 'node':
+            #     thisnode=Node()
+            #     thisnode.name = cells[1].strip()
+            #     thisnode.x=float(cells[2].strip())
+            #     thisnode.y=float(cells[3].strip())
+            #     self.nodes.append(thisnode)
+            #
+            # if keyword == 'link':
+            #     thislink = Link()
+            #     thislink.name = cells[1].strip()
+            #     thislink.node1name= cells[2].strip()
+            #     thislink.node2name= cells[3].strip()
+            #     self.links.append(thislink)
 
         #end for line
         self.UpdateLinks()

@@ -63,7 +63,8 @@ class main_window(QDialog):
     def DrawingCallback(self):
         # this is what actually draws the picture
         if self.Fourbar is not None:
-            self.Fourbar.DrawTrussPicture()
+            self.Fourbar()
+        # self.Fourbar.DrawTrussPicture()
 
     def GetFourbar(self):
         # get the filename using the OPEN dialog
@@ -83,7 +84,7 @@ class main_window(QDialog):
 
         t = self.Fourbar  # a shorter name for convenience
 
-        t.ReadTrussData(data)
+        t.ReadFourBarData(data)
 
         # rpt = t.GenerateReport()
 
@@ -91,17 +92,17 @@ class main_window(QDialog):
         # self.ui.textEdit_Report.setText(rpt)
 
         # fill the small text boxes
-        self.ui.lineEdit_a0.setText(t.longestLink.name)
-        self.ui.lineEdit_a.setText(t.longestLink.node1.name)
-        self.ui.lineEdit_StartAngle.setText(t.longestLink.node2.name)
-        self.ui.lineEdit_EndAngle.setText('{:8.2f}'.format(t.longest))
-        self.ui.lineEdit_b0.setText(t.longestLink.node1.name)
-        self.ui.lineEdit_b.setText(t.longestLink.node1.name)
-        self.ui.MouseLocation.setText(t.longestLink.node1.name)
+        # self.ui.lineEdit_a0.setText(t.longestLink.name)
+        # self.ui.lineEdit_a.setText(t.longestLink.node1.name)
+        # self.ui.lineEdit_StartAngle.setText(t.longestLink.node2.name)
+        # self.ui.lineEdit_EndAngle.setText('{:8.2f}'.format(t.longest))
+        # self.ui.lineEdit_b0.setText(t.longestLink.node1.name)
+        # self.ui.lineEdit_b.setText(t.longestLink.node1.name)
+        # self.ui.MouseLocation.setText(t.longestLink.node1.name)
 
         #draw the picture
         # this makes sure the window of the GL is slightly bigger to allow the picture of the truss to be visible
-        [xmin,xmax,ymin,ymax] = self.truss.drawingsize
+        [xmin, xmax, ymin, ymax] = self.Fourbar.window
         dx = xmax - xmin
         dy = ymax - ymin
         xmin -= 0.05*dx
@@ -109,8 +110,8 @@ class main_window(QDialog):
         ymin -= 0.05*dy
         ymax += 0.05*dy
         self.glwindow1.setViewSize(xmin,xmax,ymin,ymax, allowDistortion=False)
-
-        self.glwindow1.glUpdate()
+        app.processEvents()
+        # self.glwindow1.glUpdate()
 
     def ExitApp(self):
         app.exit()

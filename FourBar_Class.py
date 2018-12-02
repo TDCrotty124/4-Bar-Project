@@ -160,23 +160,23 @@ class Fourbar:
         # using data to control what is drawn
 
 
-        # glColor3f(0, 0.4, 0.9)  # Changes the color of the circle nodes
-        # glLineWidth(1.5)        # controls the width of the line trusses
-        # radius = self.longestLink.length / 25       # allows the radius of your circle to format and display correctly as the lengths of the trusses will vary with text files
-        # for N in range(len(self.nodes)):    # loops over all nodes and pulls the x and y values from each node
-        #     gl2DCircle(self.nodes[N].x, self.nodes[N].y, radius, fill=True)     # creates a circle for the node
-        #
-        # # for loop here
-        # glColor3f(0, 1, 0.8)    # changes the color of the truss lines
-        # for L in range(len(self.links)):        # loop that runs over all of the links
-        #     glBegin(GL_LINE_STRIP)  # begin drawing connected lines
-        #     glVertex2f(self.links[L].node1.x, self.links[L].node1.y)    # pulls the location of the node1 and
-        #     glVertex2f(self.links[L].node2.x, self.links[L].node2.y)    # draws a line from there to node2. These lines create the trusses in the drawing
-        #     glEnd()
+        glColor3f(0, 0.4, 0.9)  # Changes the color of the circle nodes
+        glLineWidth(1.5)        # controls the width of the line trusses
+        radius = self.longestLink.length / 25       # allows the radius of your circle to format and display correctly as the lengths of the trusses will vary with text files
+        for N in range(len(self.nodes)):    # loops over all nodes and pulls the x and y values from each node
+            gl2DCircle(self.nodes[N].x, self.nodes[N].y, radius, fill=True)     # creates a circle for the node
 
-        glColor3f(0, 1, 0)      # left green boundary
-        glLineWidth(2)
-        gl2DCircle(1,1,1)
+        # for loop here
+        glColor3f(0, 1, 0.8)    # changes the color of the truss lines
+        for L in range(len(self.links)):        # loop that runs over all of the links
+            glBegin(GL_LINE_STRIP)  # begin drawing connected lines
+            glVertex2f(self.links[L].node1.x, self.links[L].node1.y)    # pulls the location of the node1 and
+            glVertex2f(self.links[L].node2.x, self.links[L].node2.y)    # draws a line from there to node2. These lines create the trusses in the drawing
+            glEnd()
+
+        # glColor3f(0, 1, 0)      # left green boundary
+        # glLineWidth(2)
+        # gl2DCircle(1,1,1)
         #glBegin(GL_LINE_STRIP)  # begin drawing connected lines
         # use GL_LINE for drawing a series of disconnected lines
         #for i in range(2,len(self.boundary),2):

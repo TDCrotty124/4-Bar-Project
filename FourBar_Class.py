@@ -11,17 +11,6 @@ class style:
         self.rgb = None
         self.width = None
 
-# class Link:
-#     def __init__(self):
-#         self.name=None
-#         self.node1name=None
-#         self.node2name=None
-#         self.node1 = None
-#         self.node2 = None
-#         self.length=None
-#         self.angle=None
-
-
 class Fourbar:
     def __init__(self, ):
         self.linestyle = []
@@ -152,6 +141,42 @@ class Fourbar:
     #         self.drawingsize = [xmin, xmax, ymin, ymax]
     #     # next link
 
+    def Translation(self):
+        a = (len(self.payload)-2) / 2           # divide by 2 to split up x and y values
+        w = []
+        # w = np.zeros((a, 2))              # create the zeros array as a 2X8 matrix
+        # gear1 = np.zeros(a,2)             # I think we'll need these for the second and 3rd positions but not sure yet...
+        # gear2 = np.zeros(a,2)
+        j = 0
+        for j in range(self.payload[j+1], self.payload[j-1], 1):    # theres multiple sections of payloades so some how this line is supposed to sort through them
+            for i in range(2,len(self.payload[j]),2):  # this i is supposed to sort through the data once a payload row is selected
+                if i > 1 and i % 2 == 0: #and i < self.payload-2:                 # based on order, if its odd it should be an x... even should be y...
+                    # payloadx = [i - 1][0].append(w[:0])     # stores x valuse into the np.zeros array
+                    w.append(self.payload[0][i])
+                # else:
+                #     payloady = [i - 1][1].append(w[:1])     # same as above bt for y
+
+        # points = []
+        # pointsx = []
+        # pointsy = []
+        # self.positions = []
+        # p0x = self.positions[0]
+        # p0y = self.positions[1]
+        # p1x = self.positions[2]
+        # p1y = self.positions[3]
+        # theta1 = self.positions[4]
+        # p2x = self.positions[5]
+        # p2y = self.positions[6]
+        # theta2 = self.positions[7]
+        #
+        # for point in range(len(points)):
+        #     if point % 2 != 0:
+        #         pointsx.append(point)
+        #     else:
+        #         pointsy.append(point)
+        # deltaPx = p1x - p0x
+        # deltaPy = p1y - p0y
+
     def DrawTrussPicture(self):
         # this is what actually draws the picture
         # using data to control what is drawn
@@ -193,3 +218,7 @@ class Fourbar:
                         glVertex2f(self.payload[i][j], self.payload[i][j+1])
                         glVertex2f(self.payload[i][j+2], self.payload[i][j+3])
                         glEnd()
+
+
+
+

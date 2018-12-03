@@ -32,7 +32,7 @@ class main_window(QDialog):
         self.assign_widgets()
 
         # define two data items
-        self.Fourbar = None
+        self.fourbar = None
         self.filename = None
         # self.filename = "D:/Users/Dela/Documents/Dropbox/_Classes/_3403/__F18 - 3403/Homework/Homework 9 - Truss File/Solution and testing/Truss Design Input File 1.txt"
 
@@ -62,9 +62,9 @@ class main_window(QDialog):
 
     def DrawingCallback(self):
         # this is what actually draws the picture
-        if self.Fourbar is not None:
-            self.Fourbar()
-        # self.Fourbar.DrawTrussPicture()
+        if self.fourbar is not None:
+            # Fourbar()
+            self.fourbar.DrawTrussPicture()
 
     def GetFourbar(self):
         # get the filename using the OPEN dialog
@@ -80,9 +80,9 @@ class main_window(QDialog):
         data = f1.readlines()  # read the entire file as a list of strings
         f1.close()  # close the file  ... very important
 
-        self.Fourbar = Fourbar()  # create a Truss instance (object)
+        self.fourbar = Fourbar()  # create a Truss instance (object)
 
-        t = self.Fourbar  # a shorter name for convenience
+        t = self.fourbar  # a shorter name for convenience
 
         t.ReadFourBarData(data)
 
@@ -102,7 +102,7 @@ class main_window(QDialog):
 
         #draw the picture
         # this makes sure the window of the GL is slightly bigger to allow the picture of the truss to be visible
-        [xmin, xmax, ymin, ymax] = self.Fourbar.window
+        [xmin, xmax, ymin, ymax] = self.fourbar.window
         dx = xmax - xmin
         dy = ymax - ymin
         xmin -= 0.05*dx

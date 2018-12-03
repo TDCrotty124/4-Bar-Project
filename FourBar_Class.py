@@ -152,46 +152,44 @@ class Fourbar:
     #         self.drawingsize = [xmin, xmax, ymin, ymax]
     #     # next link
 
-
-    # Contains all the drawing commands for drawing the link lines
-        # and the nodes as circles
     def DrawTrussPicture(self):
         # this is what actually draws the picture
         # using data to control what is drawn
 
-
-        # glColor3f(0, 0.4, 0.9)  # Changes the color of the circle nodes
-        # glLineWidth(1.5)        # controls the width of the line trusses
-        # radius = self.longestLink.length / 25       # allows the radius of your circle to format and display correctly as the lengths of the trusses will vary with text files
-        # for N in range(len(self.nodes)):    # loops over all nodes and pulls the x and y values from each node
-        #     gl2DCircle(self.nodes[N].x, self.nodes[N].y, radius, fill=True)     # creates a circle for the node
-        #
-        # # for loop here
-        # glColor3f(0, 1, 0.8)    # changes the color of the truss lines
-        # for L in range(len(self.links)):        # loop that runs over all of the links
-        #     glBegin(GL_LINE_STRIP)  # begin drawing connected lines
-        #     glVertex2f(self.links[L].node1.x, self.links[L].node1.y)    # pulls the location of the node1 and
-        #     glVertex2f(self.links[L].node2.x, self.links[L].node2.y)    # draws a line from there to node2. These lines create the trusses in the drawing
-        #     glEnd()
-
-        glColor3f(0, 1, 0)      # left green boundary
-        glLineWidth(2)
-        gl2DCircle(1,1,1)
-        #glBegin(GL_LINE_STRIP)  # begin drawing connected lines
+        # begin drawing connected lines
         # use GL_LINE for drawing a series of disconnected lines
-        #for i in range(2,len(self.boundary),2):
-            #glVertex2f(self.boundary[i, 0], self.boundary[i, 1])
-            #glVertex2f(self.boundary[], self.boundary[])
-        #glEnd()
+        # draws boundaries using self.boundary and self.linestyle with correct color and thickness
+        for i in range(len(self.boundary)):
+            for k in range(len(self.linestyle)):
+                if self.boundary[i][1] == self.linestyle[k][0]:
+                    red = self.linestyle[k][1]
+                    green = self.linestyle[k][2]
+                    blue = self.linestyle[k][3]
+                    width = self.linestyle[k][4]
+                    glColor3f(red, green, blue)
+                    glLineWidth(width)
+                    for j in range(2,len(self.boundary[i])-3,2):
+                        glBegin(GL_LINE_STRIP)
+                        glVertex2f(self.boundary[i][j], self.boundary[i][j+1])
+                        glVertex2f(self.boundary[i][j+2], self.boundary[i][j+3])
+                        glEnd()
 
-        # glColor3f(1, 0, 0)  # left green boundary
-        #         # glLineWidth(2)
-        #         # glBegin(GL_LINE_STRIP)  # begin drawing connected lines
-        #         # # use GL_LINE for drawing a series of disconnected lines
-        #         # for i in range(self.boundary):
-        #         #     glVertex2f(self.dronepath[i, 0], self.dronepath[i, 1])
-        #         #     glVertex2f(self.dronepath[i, 0], self.dronepath[i, 1])
-        #         # glEnd()
+        glColor3f(0, 0, 0)  #
+        glLineWidth(1.5)
+        for i in range(0,len(self.connections)-1,2):
+            gl2DCircle(self.connections[i], self.connections[i+1], .03*(abs(self.window[0])+abs(self.window[1])), fill=True)
 
-
-
+        for i in range(len(self.payload)):
+            for k in range(len(self.linestyle)):
+                if self.payload[i][1] == self.linestyle[k][0]:
+                    red = self.linestyle[k][1]
+                    green = self.linestyle[k][2]
+                    blue = self.linestyle[k][3]
+                    width = self.linestyle[k][4]
+                    glColor3f(red, green, blue)
+                    glLineWidth(width)
+                    for j in range(2,len(self.payload[i])-3,2):
+                        glBegin(GL_LINE_STRIP)
+                        glVertex2f(self.payload[i][j], self.payload[i][j+1])
+                        glVertex2f(self.payload[i][j+2], self.payload[i][j+3])
+                        glEnd()

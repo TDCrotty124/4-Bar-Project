@@ -2,7 +2,7 @@ import numpy as np
 
 from OpenGL.GL import *
 
-from Homeworks.HW10.OpenGL_2D_class import gl2DCircle
+from OpenGL_2D_class import gl2DCircle
 
 
 class style:
@@ -16,6 +16,8 @@ class Fourbar:
         self.linestyle = []
         self.connections = []
         self.payload = []
+        self.payloadx = []
+        self.payloady = []
         self.positions = []
         self.boundary = []
         self.window = [] # an empty list of nodes
@@ -142,12 +144,31 @@ class Fourbar:
     #     # next link
 
     def Translation(self):
-        w = []
+        p0x = self.positions[0]
+        p0y = self.positions[1]
+        p1x = self.positions[2]
+        p1y = self.positions[3]
+        theta1 = self.positions[4]
+        p2x = self.positions[5]
+        p2y = self.positions[6]
+        theta2 = self.positions[7]
+
+        # test = np.zeros((3,3))
+        alldata = []
         for j in range(len(self.payload)):    # theres multiple sections of payloades so some how this line is supposed to sort through them
-            # newpayload = []
-            for i in range(0,len(self.payload[j]),2):  # this i is supposed to sort through the data once a payload row is selected
-                if i > 1 and i % 2 == 0: #and i < self.payload-2:                 # based on order, if its odd it should be an x... even should be y...
-                   payloadxy = [self.payload[j][i], self.payload[j][i+1]]
+            vals = []
+            for i in range(2,len(self.payload[j]) - 1,2):  # this i is supposed to sort through the data once a payload row is selected
+                #if i > 1 and i % 2 == 0: #and i < self.payload-2:                 # based on order, if its odd it should be an x... even should be y...
+                x = self.payload[j][i]
+                y = self.payload[j][i+1]
+                #vals.append((np.array([x,y])))
+                vals.append([x,y])
+
+            vals_numpy = np.array(vals)
+            alldata.append(vals_numpy)
+        dp1 = ()
+
+
 
 
                     # math studd to calculate positions

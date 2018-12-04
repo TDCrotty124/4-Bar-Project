@@ -64,7 +64,9 @@ class main_window(QDialog):
         # this is what actually draws the picture
         if self.fourbar is not None:
             # Fourbar()
+            self.fourbar.Translation()
             self.fourbar.DrawTrussPicture()
+
 
     def GetFourbar(self):
         # get the filename using the OPEN dialog

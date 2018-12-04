@@ -2,7 +2,7 @@ import numpy as np
 
 from OpenGL.GL import *
 
-from OpenGL_2D_class import gl2DCircle
+from Homeworks.HW10.OpenGL_2D_class import gl2DCircle
 
 from copy import deepcopy
 
@@ -80,83 +80,15 @@ class Fourbar:
                     ans = float(win.replace("(", "").replace(")", ""))
                     self.window.append(ans)
 
-
-
-            # if keyword == 'node':
-            #     thisnode=Node()
-            #     thisnode.name = cells[1].strip()
-            #     thisnode.x=float(cells[2].strip())
-            #     thisnode.y=float(cells[3].strip())
-            #     self.nodes.append(thisnode)
-            #
-            # if keyword == 'link':
-            #     thislink = Link()
-            #     thislink.name = cells[1].strip()
-            #     thislink.node1name= cells[2].strip()
-            #     thislink.node2name= cells[3].strip()
-            #     self.links.append(thislink)
-
-        #end for line
-        # self.UpdateLinks()
-
-    # Add 1 more thing which is the viewing size
-    # def UpdateLinks(self):
-    #     #get the node info
-    #     # for link in self.links:
-    #     #     for node in  self.nodes:
-    #     #         if node.name == link.node1name:
-    #     #             link.node1 = node
-    #     #         if node.name == link.node2name:
-    #     #             link.node2 = node
-    #     #     #next node
-    #     #next link
-    #
-    #     #get link lengths and angles
-    #     # self.longest = -99999999
-    #     # self.longestLink = None
-    #     # for link in self.links:
-    #     #     x1=link.length = link.node1.x
-    #     #     y1=link.length = link.node1.y
-    #     #     x2=link.length = link.node2.x
-    #     #     y2=link.length = link.node2.y
-    #     #     link.length = np.sqrt( (x2-x1)**2 + (y2-y1)**2)
-    #     #     link.angle = np.arctan2((y2-y1),(x2-x1))
-    #
-    #         # if link.length > self.longest:
-    #         #     self.longest = link.length
-    #         #     self.longestLink = link
-    #
-    #     #     we must create a value to compare to nodes to make sure we are receiving the max and min x&y values
-    #         xmin = 100000
-    #         ymin = 100000
-    #         xmax = -100000
-    #         ymax = -100000
-    #
-    #         # for node in self.nodes:    # for loop that sets node.x and node.y to its max and min values to create a certain size for the GL
-    #         #     if node.x > xmax:
-    #         #         xmax = node.x
-    #         #     if node.x < xmin:
-    #         #         xmin = node.x
-    #         #     if node.y > ymax:
-    #         #         ymax = node.y
-    #         #     if node.y < ymin:
-    #         #         ymin = node.y
-    #
-    #
-    #
-    #
-    #         self.drawingsize = [xmin, xmax, ymin, ymax]
-    #     # next link
-
     def Translation(self):
         p0x = self.positions[0]
         p0y = self.positions[1]
         p1x = self.positions[2]
         p1y = self.positions[3]
-        theta1 = self.positions[4]
+        theta1 = np.radians(self.positions[4])
         p2x = self.positions[5]
         p2y = self.positions[6]
-        theta2 = self.positions[7]
+        theta2 = np.radians(self.positions[7])
         p0= np.array([p0x,p0y])
         p1= np.array([p1x,p1y])
         p2 = np.array([p2x,p2y])
@@ -205,25 +137,6 @@ class Fourbar:
                 self.p2[i][j][1] += p2y
 
 
-
-
-
-
-
-
-
-
-        dp1 = (p1 - p0)
-        dp2 = (p2 - p1)
-
-        pos0 = alldata
-
-        vals1 = np.matmul(rotate1, alldata)
-        pos1 = dp1 + vals1
-
-        vals2 = np.matmul(pos1, rotate2)
-        pos2 = dp2 + vals2
-
                     # math studd to calculate positions
 
                     # newpayload.append(newpayloadxy)
@@ -255,6 +168,23 @@ class Fourbar:
         for i in range(0,len(self.connections)-1,2):
             gl2DCircle(self.connections[i], self.connections[i+1], .03*(abs(self.window[0])+abs(self.window[1])), fill=True)
 
+        glColor3f(.5, .5, .5)  #
+        glLineWidth(1.5)
+        for i in range(len(self.p0)):
+            for j in range(0, len(self.p0[i]) - 1, 1):
+                glBegin(GL_LINE_STRIP)
+                glVertex2f(self.p0[i][j][0], self.p0[i][j][1])
+                glVertex2f(self.p0[i][j + 1][0], self.p0[i][j + 1][1])
+                glEnd()
+                glBegin(GL_LINE_STRIP)
+                glVertex2f(self.p1[i][j][0], self.p1[i][j][1])
+                glVertex2f(self.p1[i][j + 1][0], self.p1[i][j + 1][1])
+                glEnd()
+                glBegin(GL_LINE_STRIP)
+                glVertex2f(self.p2[i][j][0], self.p2[i][j][1])
+                glVertex2f(self.p2[i][j + 1][0], self.p2[i][j + 1][1])
+                glEnd()
+
         for i in range(len(self.payload)):
             for k in range(len(self.linestyle)):
                 if self.payload[i][1] == self.linestyle[k][0]:
@@ -269,6 +199,11 @@ class Fourbar:
                         glVertex2f(self.payload[i][j], self.payload[i][j+1])
                         glVertex2f(self.payload[i][j+2], self.payload[i][j+3])
                         glEnd()
+
+
+
+
+
 
 
 

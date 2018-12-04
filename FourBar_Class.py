@@ -4,6 +4,7 @@ from OpenGL.GL import *
 
 from OpenGL_2D_class import gl2DCircle
 
+from copy import deepcopy
 
 class style:
     def __init__(self):
@@ -21,6 +22,10 @@ class Fourbar:
         self.positions = []
         self.boundary = []
         self.window = [] # an empty list of nodes
+
+        self.p0 = None
+        self.p1 = None
+        self.p2 = None
         # self.links = [] # an empty list of links
         # self.longest = -99999999
         # self.longestLink = None
@@ -152,6 +157,9 @@ class Fourbar:
         p2x = self.positions[5]
         p2y = self.positions[6]
         theta2 = self.positions[7]
+        p0= np.array([p0x,p0y])
+        p1= np.array([p1x,p1y])
+        p2 = np.array([p2x,p2y])
 
         # test = np.zeros((3,3))
         alldata = []
@@ -166,34 +174,59 @@ class Fourbar:
 
             vals_numpy = np.array(vals)
             alldata.append(vals_numpy)
-        dp1 = ()
+
+
+        self.p0 = deepcopy(alldata)
+        self.p1 = deepcopy(alldata)
+        self.p2 = deepcopy(alldata)
+
+        #Translate to origin
+        for i in range(len(self.p1)):
+            for j in range(len(self.p1[i])):
+                self.p1[i][j][0] -= p0x
+                self.p1[i][j][1] -= p0y
+                self.p2[i][j][0] -= p0x
+                self.p2[i][j][1] -= p0y
+
+        #Rotate
+        rotate1 = [[np.cos(theta1), np.sin(theta1)], [-np.sin(theta1), np.cos(theta1)]]
+        rotate2 = [[np.cos(theta2), np.sin(theta2)], [-np.sin(theta2), np.cos(theta2)]]
+
+        for i in range(len(self.p1)):
+            self.p1[i] = np.matmul(self.p1[i],rotate1)
+            self.p2[i] = np.matmul(self.p2[i],rotate2)
+        #Currently both at origin and rotated
+
+        for i in range(len(self.p1)):
+            for j in range(len(self.p1[i])):
+                self.p1[i][j][0] += p1x
+                self.p1[i][j][1] += p1y
+                self.p2[i][j][0] += p2x
+                self.p2[i][j][1] += p2y
 
 
 
+
+
+
+
+
+
+
+        dp1 = (p1 - p0)
+        dp2 = (p2 - p1)
+
+        pos0 = alldata
+
+        vals1 = np.matmul(rotate1, alldata)
+        pos1 = dp1 + vals1
+
+        vals2 = np.matmul(pos1, rotate2)
+        pos2 = dp2 + vals2
 
                     # math studd to calculate positions
 
                     # newpayload.append(newpayloadxy)
-        # points = []
-        # pointsx = []
-        # pointsy = []
-        # self.positions = []
-        # p0x = self.positions[0]
-        # p0y = self.positions[1]
-        # p1x = self.positions[2]
-        # p1y = self.positions[3]
-        # theta1 = self.positions[4]
-        # p2x = self.positions[5]
-        # p2y = self.positions[6]
-        # theta2 = self.positions[7]
-        #
-        # for point in range(len(points)):
-        #     if point % 2 != 0:
-        #         pointsx.append(point)
-        #     else:
-        #         pointsy.append(point)
-        # deltaPx = p1x - p0x
-        # deltaPy = p1y - p0y
 
     def DrawTrussPicture(self):
         # this is what actually draws the picture

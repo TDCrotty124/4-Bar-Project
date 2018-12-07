@@ -32,6 +32,7 @@ class main_window(QDialog):
 
         # define any data (including object variables) your program might need
         self.mydrone = DroneCatcher()
+        self.fourbar = Fourbar
 
         # create and setup the GL window object
         self.setupGLWindows()
@@ -51,8 +52,8 @@ class main_window(QDialog):
         self.ui.pushButton_Exit.clicked.connect(self.ExitApp)
         self.ui.horizontalSlider_zoom.valueChanged.connect(self.glZoomSlider)
         self.ui.pushButton_Select.clicked.connect(self.GetFourbar)
-    # Widget callbacks start here
 
+    # Widget callbacks start here
     def glZoomSlider(self):  # I used a slider to control GL zooming
         zoomval = float((self.ui.horizontalSlider_zoom.value()) / 200 + 0.25)
         self.glwindow1.glZoom(zoomval)  # set the zoom value
@@ -89,6 +90,24 @@ class main_window(QDialog):
             self.fourbar.ThreeBarCircle()
             self.fourbar.DrawTrussPicture()
 
+            t = self.fourbar
+
+            # fill the small text boxes
+            # initial point A and point B
+            self.ui.lineEdit_a0.setText('{:.2f}'.format(t.a0[0]) + " , " + '{:.2f}'.format(t.a0[1]))
+            self.ui.lineEdit_b0.setText('{:.2f}'.format(t.a0[0]) + " , " + '{:.2f}'.format(t.a0[1]))
+
+            # Black dots -- different positions as the black dots move
+            self.ui.lineEdit_a.setText('{:.2f}'.format(t.ha) + " , " + '{:.2f}'.format(t.ka))
+            self.ui.lineEdit_b.setText('{:.2f}'.format(t.hb) + " , " + '{:.2f}'.format(t.kb))
+
+            # Angles that are calculated from fsolve theta3 and theta4
+            self.ui.lineEdit_StartAngle.setText('{:.2f}'.format(t.positions[4]))
+            self.ui.lineEdit_EndAngle.setText('{:.2f}'.format(t.positions[7]))
+
+
+
+
         self.glwindow1.glDraggingShowHandles()
 
 
@@ -117,8 +136,11 @@ class main_window(QDialog):
         # put the report in the large TextBox
         # self.ui.textEdit_Report.setText(rpt)
 
-        # fill the small text boxes
-        # self.ui.lineEdit_b0.setText('{:.2f}'.format(t.ha))
+
+
+
+
+
         # self.ui.lineEdit_a0.setText('{:.2f}'.format(t.centera))
 
         # self.ui.lineEdit_linkname.setText('{:.2f}'.format(self.truss.linkname))

@@ -40,7 +40,7 @@ class Fourbar:
         self.p2 = None
 
         self.a0 = None
-        self.a1 = None
+        self.a1 = []
         self.a2 = None
 
         self.b0 = None
@@ -391,13 +391,13 @@ class Fourbar:
 
         #test for sports wing
 
-        glColor3f(.2, .8, 1)  #
-        glLineWidth(1.5)
-        gl2DCircle(4,1,.018,fill=True)
-
-        glColor3f(.2, .8, 1)  #
-        glLineWidth(1.5)
-        gl2DCircle(4.3,1.7,.018,fill=True)
+        # glColor3f(.2, .8, 1)  #
+        # glLineWidth(1.5)
+        # gl2DCircle(4,1,.018,fill=True)
+        #
+        # glColor3f(.2, .8, 1)  #
+        # glLineWidth(1.5)
+        # gl2DCircle(4.3,1.7,.018,fill=True)
 
 
 

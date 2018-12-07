@@ -40,15 +40,18 @@ class Fourbar:
         self.p2 = None
 
         self.a0 = None
-        self.a1 = []
-        self.a2 = None
-
         self.b0 = None
-        self.b1 = None
-        self.b2 = None
 
         self.ha = None
         self.ka = None
+
+        self.a0x = None
+        self.a0y = None
+        self.b0x = None
+        self.b0y = None
+
+        self.newx = None
+        self.newy = None
         # self.ra = 1
         #
         # self.hb = 2
@@ -113,6 +116,13 @@ class Fourbar:
                     ans = float(win.replace("(", "").replace(")", ""))
                     self.window.append(ans)
 
+        self.a0x = self.connections[0]
+        self.a0y = self.connections[1]
+        self.b0x = self.connections[2]
+        self.b0y = self.connections[3]
+        self.a0 = np.array([self.a0x, self.a0y])
+        self.b0 = np.array([self.b0x, self.b0y])
+
     def Translation(self):
         p0x = self.positions[0]
         p0y = self.positions[1]
@@ -126,12 +136,8 @@ class Fourbar:
         p1 = np.array([p1x, p1y])
         p2 = np.array([p2x, p2y])
 
-        a0x = self.connections[0]
-        a0y = self.connections[1]
-        b0x = self.connections[2]
-        b0y = self.connections[3]
-        a0 = np.array([a0x, a0y])
-        b0 = np.array([b0x, b0y])
+        self.a0 = np.array([self.a0x, self.a0y])
+        self.b0 = np.array([self.b0x, self.b0y])
 
         # test = np.zeros((3,3))
         alldata = []
@@ -153,13 +159,13 @@ class Fourbar:
         self.p1 = deepcopy(alldata)
         self.p2 = deepcopy(alldata)
 
-        self.a0 = deepcopy(a0)
-        self.a1 = deepcopy(a0)
-        self.a2 = deepcopy(a0)
+        self.a0 = deepcopy(self.a0)
+        self.a1 = deepcopy(self.a0)
+        self.a2 = deepcopy(self.a0)
 
-        self.b0 = deepcopy(b0)
-        self.b1 = deepcopy(b0)
-        self.b2 = deepcopy(b0)
+        self.b0 = deepcopy(self.b0)
+        self.b1 = deepcopy(self.b0)
+        self.b2 = deepcopy(self.b0)
 
 
 
@@ -380,11 +386,13 @@ class Fourbar:
         gl2DCircle(self.hb, self.kb, .02 * (abs(self.window[0]) + abs(self.window[1])), fill=True)
 
         glBegin(GL_LINE_STRIP)
+        glColor3f(0, 0, 0)
         glVertex2f(self.ha, self.ka)
         glVertex2f(self.a0[0], self.a0[1])
         glEnd()
 
         glBegin(GL_LINE_STRIP)
+        glColor3f(1, 1, 0)
         glVertex2f(self.hb, self.kb)
         glVertex2f(self.b0[0], self.b0[1])
         glEnd()

@@ -52,6 +52,23 @@ class main_window(QDialog):
         self.ui.pushButton_Exit.clicked.connect(self.ExitApp)
         self.ui.horizontalSlider_zoom.valueChanged.connect(self.glZoomSlider)
         self.ui.pushButton_Select.clicked.connect(self.GetFourbar)
+        self.ui.pushButton_SwapLinks.clicked.connect(self.SwitchLinks)
+
+        # Widget callbacks start here
+
+    def SwitchLinks(self):
+        self.fourbar.newx = self.fourbar.a0x
+        self.fourbar.newy = self.fourbar.a0y
+
+        self.fourbar.a0x = self.fourbar.b0x
+        self.fourbar.a0y = self.fourbar.b0y
+        self.fourbar.b0x = self.fourbar.newx
+        self.fourbar.b0y = self.fourbar.newy
+
+        self.fourbar.Translation()
+        self.fourbar.ThreeBarCircle()
+        self.fourbar.DrawTrussPicture()
+        self.glwindow1.glUpdate()
 
     # Widget callbacks start here
     def glZoomSlider(self):  # I used a slider to control GL zooming

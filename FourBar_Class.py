@@ -2,7 +2,7 @@ import numpy as np
 
 from OpenGL.GL import *
 
-from Homeworks.HW10.OpenGL_2D_class import gl2DCircle
+from OpenGL_2D_class import gl2DCircle
 
 from copy import deepcopy
 
@@ -325,4 +325,34 @@ class Fourbar:
         glLineWidth(1.5)
         gl2DCircle(self.hb, self.kb, self.rb, fill=False)
 
+    def CreateDraggingList(self):
+        draglist = [[self.  # , self.#],
+                     [self.  # , self.#]]
+        return draglist
 
+
+    def DraggingListItemChanged(self, x, y, draglist, index):
+        if index == 0:  # A Connection
+            self.  # , self.# = [x, y]
+            draglist[0] = [x, y]
+
+        if index == 1:  # B Connection
+            self.  # , self.# = [x, y]
+            draglist[1] = [x, y]
+
+        self.updateobject()  ##
+
+
+    def draggingCallback(self, start):
+        if start is True:
+            draglist = self.fourbar.CreateDraggingList()
+            near = 15
+            self.glwindow1.g1StartDragging(self.draggingCallback, draglist, near, handlesize=.1, handlewidth=1,
+                                           handlecolor=[1, 0, 1])
+            self.ui.dragging.setChecked(False)
+        elif start is False:
+            self.glwindow1.glStopDragging()
+            self.ui.dragging.setChecked(False)
+
+    # def ShowConstruction(self, show)
+    # if show is True...

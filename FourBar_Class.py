@@ -2,7 +2,7 @@ import numpy as np
 
 from OpenGL.GL import *
 
-from OpenGL_2D_class import gl2DCircle
+from Homeworks.HW10.OpenGL_2D_class import gl2DCircle
 
 from copy import deepcopy
 
@@ -117,9 +117,11 @@ class Fourbar:
 
         # test = np.zeros((3,3))
         alldata = []
-        for j in range(len(self.payload)):  # theres multiple sections of payloades so some how this line is supposed to sort through them
+        for j in range(len(
+                self.payload)):  # theres multiple sections of payloades so some how this line is supposed to sort through them
             vals = []
-            for i in range(2, len(self.payload[j]) - 1, 2):  # this i is supposed to sort through the data once a payload row is selected
+            for i in range(2, len(self.payload[j]) - 1,
+                           2):  # this i is supposed to sort through the data once a payload row is selected
                 # if i > 1 and i % 2 == 0: #and i < self.payload-2:                 # based on order, if its odd it should be an x... even should be y...
                 x = self.payload[j][i]
                 y = self.payload[j][i + 1]
@@ -140,6 +142,8 @@ class Fourbar:
         self.b0 = deepcopy(b0)
         self.b1 = deepcopy(b0)
         self.b2 = deepcopy(b0)
+
+
 
         # Translate to origin
         for i in range(len(self.p1)):
@@ -166,11 +170,14 @@ class Fourbar:
         for i in range(len(self.p1)):
             self.p1[i] = np.matmul(self.p1[i], rotate1)
             self.p2[i] = np.matmul(self.p2[i], rotate2)
-        # Currently both at origin and rotated
+
         self.a1 = np.matmul(self.a1, rotate1)
+        self.b1 = np.matmul(self.b1, rotate1)
         self.a2 = np.matmul(self.a2, rotate2)
-        self.b1 = np.matmul(self.a1, rotate1)
-        self.b2 = np.matmul(self.a2, rotate2)
+        self.b2 = np.matmul(self.b2, rotate2)
+
+
+        # Currently both at origin and rotated
 
         for i in range(len(self.p1)):
             for j in range(len(self.p1[i])):
@@ -189,15 +196,20 @@ class Fourbar:
         self.b2[0] += p2x
         self.b2[1] += p2y
 
+                # math studd to calculate positions
+
+                # newpayload.append(newpayloadxy)
+
+
     def ThreeBarCircle(self):
         # initial guesses
         self.ha = 0.0
         self.ka = 0.0
         self.ra = 0.0
 
-        # self.hb = 0.0
-        # self.kb = 0.0
-        # self.rb = 0.0
+        self.hb = 0.0
+        self.kb = 0.0
+        self.rb = 0.0
 
         def solve(vars, args):
             [h, k, r] = vars
@@ -211,11 +223,12 @@ class Fourbar:
 
         vars = [self.ha, self.ka, self.ra]
         args = [self.a0[0], self.a0[1], self.a1[0], self.a1[1], self.a2[0], self.a2[1]]
-        self.ha, self.ka, self.ra = fsolve(solve, vars, args=args)
+        self.ha, self.ka, self.ra = fsolve(solve, vars, args=args)      # ha = x, ka = y, r = radius of circle
 
-        # vars = [self.hb, self.kb, self.rb]
-        # args = [self.b0[0], self.b0[1], self.b1[0], self.b1[1], self.b2[0], self.b2[1]]
-        # self.hb, self.kb, self.rb = fsolve(solve, vars, args=args)
+        vars = [self.hb, self.kb, self.rb]
+        args = [self.b0[0], self.b0[1], self.b1[0], self.b1[1], self.b2[0], self.b2[1]]
+        self.hb, self.kb, self.rb = fsolve(solve, vars, args=args)
+
 
     def DrawTrussPicture(self):
         # this is what actually draws the picture
@@ -239,12 +252,37 @@ class Fourbar:
                         glVertex2f(self.boundary[i][j + 2], self.boundary[i][j + 3])
                         glEnd()
 
-        glColor3f(0, 0, 0)  #
-        glLineWidth(1.5)
-        for i in range(0, len(self.connections) - 1, 2):
-            gl2DCircle(self.connections[i], self.connections[i + 1], .03 * (abs(self.window[0]) + abs(self.window[1])),
-                       fill=True)
+        # glColor3f(1, .5, .3)  #
+        # glLineWidth(1.5)
+        # for i in range(0, len(self.connections) - 1, 2):
+        #     gl2DCircle(self.connections[i], self.connections[i + 1], .015 * (abs(self.window[0]) + abs(self.window[1])),fill=True)
 
+        # Draws the A and B points according p0, p1, p2 of payload
+        glColor3f(1, .5, .3)  #
+        glLineWidth(1.5)
+        gl2DCircle(self.a0[0], self.a0[1], .015 * (abs(self.window[0]) + abs(self.window[1])), fill=True)
+
+        glColor3f(1, .5, .3)  #
+        glLineWidth(1.5)
+        gl2DCircle(self.b0[0], self.b0[1], .015 * (abs(self.window[0]) + abs(self.window[1])), fill=True)
+
+        glColor3f(0, 1, 0)  #
+        glLineWidth(1.5)
+        gl2DCircle(self.a1[0], self.a1[1], .015 * (abs(self.window[0]) + abs(self.window[1])), fill=True)
+
+        glColor3f(0, 1, 0)  #
+        glLineWidth(1.5)
+        gl2DCircle(self.b1[0], self.b1[1], .015 * (abs(self.window[0]) + abs(self.window[1])), fill=True)
+
+        glColor3f(1, 0, 0)  #
+        glLineWidth(1.5)
+        gl2DCircle(self.a2[0], self.a2[1], .015 * (abs(self.window[0]) + abs(self.window[1])), fill=True)
+
+        glColor3f(1, 0, 0)  #
+        glLineWidth(1.5)
+        gl2DCircle(self.b2[0], self.b2[1], .015 * (abs(self.window[0]) + abs(self.window[1])), fill=True)
+
+        # Draws the positions that the payload will go through
         glColor3f(.5, .5, .5)  #
         glLineWidth(1.5)
         for i in range(len(self.p0)):
@@ -262,6 +300,7 @@ class Fourbar:
                 glVertex2f(self.p2[i][j + 1][0], self.p2[i][j + 1][1])
                 glEnd()
 
+        # Draws the actual payload with colored lines and the wheel
         for i in range(len(self.payload)):
             for k in range(len(self.linestyle)):
                 if self.payload[i][1] == self.linestyle[k][0]:
@@ -276,3 +315,6 @@ class Fourbar:
                         glVertex2f(self.payload[i][j], self.payload[i][j + 1])
                         glVertex2f(self.payload[i][j + 2], self.payload[i][j + 3])
                         glEnd()
+
+        # draws the links between the A and B connections and the arc that fsolve calculated
+        

@@ -317,4 +317,12 @@ class Fourbar:
                         glEnd()
 
         # draws the links between the A and B connections and the arc that fsolve calculated
-        
+        glColor3f(1, 0, 0)  #
+        glLineWidth(1.5)
+        gl2DCircle(self.ha, self.ka, self.ra, fill=False)
+
+        glColor3f(1, 0, 0)  #
+        glLineWidth(1.5)
+        gl2DCircle(self.hb, self.kb, self.rb, fill=False)
+
+

@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QFileDialog, QMessageBox
 # standard OpenGL imports
 from OpenGL.GLUT import *
 
-from Homeworks.HW10.OpenGL_2D_class import gl2D
+from OpenGL_2D_class import gl2D
 
 # the ui created by Designer and pyuic
 from FinalProject import Ui_Dialog
@@ -13,6 +13,14 @@ from FourBar_Class import Fourbar
 
 # import the Problem Specific class
 from DroneCatcher import DroneCatcher
+
+sys._excepthook = sys.excepthook
+def exception_hook(exctype,value,traceback):
+    print(exctype, value, traceback)
+    sys. excepthook(exctype, value, traceback)
+    sys.exit(1)
+
+sys.excepthook = exception_hook
 
 
 class main_window(QDialog):
@@ -65,6 +73,7 @@ class main_window(QDialog):
         if self.fourbar is not None:
             # Fourbar()
             self.fourbar.Translation()
+            self.fourbar.ThreeBarCircle()
             self.fourbar.DrawTrussPicture()
 
 

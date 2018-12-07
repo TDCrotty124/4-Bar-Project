@@ -257,36 +257,22 @@ class Fourbar:
         # self.centerb = ([self.hb, self.kb])
 
     def CreateDraggingList(self):
-        draglist = [[self.ha , self.ka],
-                     [self.hb , self.kb]]
+        draglist= [[self.a0[0], self.a0[1]],
+                   [self.b0[0], self.b0[1]]]
         return draglist
 
 
     def DraggingListItemChanged(self, x, y, draglist, index):
         if index == 0:  # A Connection
-            self.ha, self.ka = [x, y]
+            self.a0[0], self.a0[1] = [x, y]
             draglist[0] = [x, y]
 
         if index == 1:  # B Connection
-            self.hb , self.kb = [x, y]
+            self.b0[0], self.b0[1] = [x, y]
             draglist[1] = [x, y]
 
+        self.Translation()
         self.ThreeBarCircle()
-
-
-    def draggingCallback(self, start):
-        if start is True:
-            draglist = self.fourbar.CreateDraggingList()
-            near = 15
-            self.glwindow1.g1StartDragging(self.draggingCallback, draglist, near, handlesize=.1, handlewidth=1,
-                                           handlecolor=[1, 0, 1])
-            self.ui.dragging.setChecked(False)
-        elif start is False:
-            self.glwindow1.glStopDragging()
-            self.ui.dragging.setChecked(False)
-
-    # def ShowConstruction(self, show)
-    # if show is True...
 
 
 

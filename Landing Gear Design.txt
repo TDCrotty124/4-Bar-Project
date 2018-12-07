@@ -1,0 +1,33 @@
+# Lines starting with a # character are comments to be ignored
+# You may have comment lines anywhere in the file\
+#
+# Other lines in the file are identified by specific KEYWORDS, followed by data
+# KEYWORDS may include Capital letters, but capitalization will be ignored
+# blank lines are also allowed and should be ignored
+
+# each line stands alone, and there is no required ORDER to the file
+
+title, Landing Gear Design
+distance_unit,  meters
+
+#                  a               b
+connections,(3.226, 2.769), (1.755, 0.739)
+
+#          name  rgb values   width     
+linestyle, red-thick,   (1,0,0),    3.0 
+linestyle, red-thin ,(1,0,0),    1.0 
+linestyle, green, (0,1,0),    3
+linestyle, dark-green, (0, 0.7, 0),   5
+linestyle, black, (0,0,0),  4
+
+payload, Gear Support, dark-green, (3.85,2.97),(3.02,3.39),(1.86,1.02),(2.13,0.26),(2.46, 0.11),(3.85,2.97)
+payload, Tire, black, (1.86,1.02),(0.57,0.89),(0.65,0.10),(2.13,0.26),(1.86,1.02)
+
+#            p0x   p0y    p1x   p1y  theta1   p2x   p26   theta2
+positions, (3.02, 3.39), (3.15, 1.49,   32), (2.78, -0.41,  83.7)
+
+boundary, left boundary, green, (0,0),(0.45,0),(0.45,1.6),(1.15,1.6),(1.15,2.3),(2,2.3)
+boundary, right boundary, red-thick, (4,2.3),(5.35,2.3),(5.35,0),(5.75,0)
+
+# drawing space    xmin  xmax  ymin  ymax
+window,             -2,    7,   -4,    4

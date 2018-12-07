@@ -17,6 +17,11 @@ class style:
         self.name = None
         self.rgb = None
         self.width = None
+# class values:
+# #     def __init__(self):
+# #         self.name = None
+# #         self.
+# #         self.angle = None
 
 
 class Fourbar:
@@ -41,6 +46,19 @@ class Fourbar:
         self.b0 = None
         self.b1 = None
         self.b2 = None
+
+        self.ha = None
+        self.ka = None
+        # self.ra = 1
+        #
+        # self.hb = 2
+        # self.kb = 1
+        # self.rb = 0
+
+        # self.centera = None
+        # self.centerb = None
+
+
 
         # self.links = [] # an empty list of links
         # self.longest = -99999999
@@ -203,13 +221,13 @@ class Fourbar:
 
     def ThreeBarCircle(self):
         # initial guesses
-        self.ha = 0.0
-        self.ka = 0.0
-        self.ra = 0.0
+        self.ha = 1
+        self.ka = 1
+        self.ra = 1
 
-        self.hb = 0.0
-        self.kb = 0.0
-        self.rb = 0.0
+        self.hb = 2
+        self.kb = 1
+        self.rb = 0
 
         def solve(vars, args):
             [h, k, r] = vars
@@ -228,6 +246,42 @@ class Fourbar:
         vars = [self.hb, self.kb, self.rb]
         args = [self.b0[0], self.b0[1], self.b1[0], self.b1[1], self.b2[0], self.b2[1]]
         self.hb, self.kb, self.rb = fsolve(solve, vars, args=args)
+
+        # self.centera = ([self.ha, self.ka])
+        # self.centerb = ([self.hb, self.kb])
+
+    def CreateDraggingList(self):
+        draglist = [[self.ha , self.ka],
+                     [self.hb , self.kb]]
+        return draglist
+
+
+    def DraggingListItemChanged(self, x, y, draglist, index):
+        if index == 0:  # A Connection
+            self.ha, self.ka = [x, y]
+            draglist[0] = [x, y]
+
+        if index == 1:  # B Connection
+            self.hb , self.kb = [x, y]
+            draglist[1] = [x, y]
+
+        self.ThreeBarCircle()
+
+
+    def draggingCallback(self, start):
+        if start is True:
+            draglist = self.fourbar.CreateDraggingList()
+            near = 15
+            self.glwindow1.g1StartDragging(self.draggingCallback, draglist, near, handlesize=.1, handlewidth=1,
+                                           handlecolor=[1, 0, 1])
+            self.ui.dragging.setChecked(False)
+        elif start is False:
+            self.glwindow1.glStopDragging()
+            self.ui.dragging.setChecked(False)
+
+    # def ShowConstruction(self, show)
+    # if show is True...
+
 
 
     def DrawTrussPicture(self):
@@ -317,42 +371,41 @@ class Fourbar:
                         glEnd()
 
         # draws the links between the A and B connections and the arc that fsolve calculated
-        glColor3f(1, 0, 0)  #
+        glColor3f(0, 0, 0)  #
         glLineWidth(1.5)
-        gl2DCircle(self.ha, self.ka, self.ra, fill=False)
+        gl2DCircle(self.ha, self.ka, .02 * (abs(self.window[0]) + abs(self.window[1])), fill=True)
 
-        glColor3f(1, 0, 0)  #
+        glColor3f(0, 0, 0)  #
         glLineWidth(1.5)
-        gl2DCircle(self.hb, self.kb, self.rb, fill=False)
+        gl2DCircle(self.hb, self.kb, .02 * (abs(self.window[0]) + abs(self.window[1])), fill=True)
 
-    def CreateDraggingList(self):
-        draglist = [[self.  # , self.#],
-                     [self.  # , self.#]]
-        return draglist
+        glBegin(GL_LINE_STRIP)
+        glVertex2f(self.ha, self.ka)
+        glVertex2f(self.a0[0], self.a0[1])
+        glEnd()
+
+        glBegin(GL_LINE_STRIP)
+        glVertex2f(self.hb, self.kb)
+        glVertex2f(self.b0[0], self.b0[1])
+        glEnd()
+
+        #test for sports wing
+
+        glColor3f(.2, .8, 1)  #
+        glLineWidth(1.5)
+        gl2DCircle(4,1,.018,fill=True)
+
+        glColor3f(.2, .8, 1)  #
+        glLineWidth(1.5)
+        gl2DCircle(4.3,1.7,.018,fill=True)
 
 
-    def DraggingListItemChanged(self, x, y, draglist, index):
-        if index == 0:  # A Connection
-            self.  # , self.# = [x, y]
-            draglist[0] = [x, y]
-
-        if index == 1:  # B Connection
-            self.  # , self.# = [x, y]
-            draglist[1] = [x, y]
-
-        self.updateobject()  ##
 
 
-    def draggingCallback(self, start):
-        if start is True:
-            draglist = self.fourbar.CreateDraggingList()
-            near = 15
-            self.glwindow1.g1StartDragging(self.draggingCallback, draglist, near, handlesize=.1, handlewidth=1,
-                                           handlecolor=[1, 0, 1])
-            self.ui.dragging.setChecked(False)
-        elif start is False:
-            self.glwindow1.glStopDragging()
-            self.ui.dragging.setChecked(False)
 
-    # def ShowConstruction(self, show)
-    # if show is True...
+
+
+
+
+
+

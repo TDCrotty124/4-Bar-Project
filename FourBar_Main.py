@@ -59,6 +59,11 @@ class main_window(QDialog):
         self.glwindow1.glUpdate()  # update the GL image
 
 
+    def eventFilter(self, source, event):  # allow GL to handle Mouse Events
+        self.glwindow1.glHandleMouseEvents(event)  # let GL handle the event
+        return super(QDialog, self).eventFilter(source, event)
+
+
     # Setup OpenGL Drawing and Viewing
     def setupGLWindows(self):  # setup all GL windows
         # send it the   GL Widget     and the drawing Callback function
@@ -66,6 +71,14 @@ class main_window(QDialog):
 
         # set the drawing space:    xmin  xmax  ymin   ymax
         self.glwindow1.setViewSize(-10, 500, -10, 200, allowDistortion=False)
+
+        # Optional: Setup GL Mouse Functionality
+        self.ui.openGLWidget.installEventFilter(self)  # to read mouse events
+        self.ui.openGLWidget.setMouseTracking(True)  # to enable mouse events
+
+        # OPTIONAL: to display the mouse location  - the name of the TextBox
+        self.glwindow1.glMouseDisplayTextBox(self.ui.MouseLocation)
+
 
 
     def DrawingCallback(self):
@@ -75,6 +88,8 @@ class main_window(QDialog):
             self.fourbar.Translation()
             self.fourbar.ThreeBarCircle()
             self.fourbar.DrawTrussPicture()
+
+        self.glwindow1.glDraggingShowHandles()
 
 
     def GetFourbar(self):
@@ -103,6 +118,11 @@ class main_window(QDialog):
         # self.ui.textEdit_Report.setText(rpt)
 
         # fill the small text boxes
+        # self.ui.lineEdit_b0.setText('{:.2f}'.format(t.ha))
+        # self.ui.lineEdit_a0.setText('{:.2f}'.format(t.centera))
+
+        # self.ui.lineEdit_linkname.setText('{:.2f}'.format(self.truss.linkname))
+
         # self.ui.lineEdit_a0.setText(t.longestLink.name)
         # self.ui.lineEdit_a.setText(t.longestLink.node1.name)
         # self.ui.lineEdit_StartAngle.setText(t.longestLink.node2.name)

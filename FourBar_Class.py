@@ -1,3 +1,8 @@
+
+
+# please be kind.......
+
+
 import numpy as np
 
 from OpenGL.GL import *
@@ -16,13 +21,6 @@ class style:
         self.name = None
         self.rgb = None
         self.width = None
-
-
-# class values:
-# #     def __init__(self):
-# #         self.name = None
-# #         self.
-# #         self.angle = None
 
 
 class Fourbar:
@@ -64,31 +62,36 @@ class Fourbar:
         self.newx = None
         self.newy = None
 
+        self.thetaInitial1 = None
+        self.thetaEnding1 = None
+
+        self.thetaInitial2 = None
+        self.thetaEnding2 = None
+
+        self.theta1 = None
+        self.theta2 = None
         self.theta3 = None
         self.theta4 = None
 
+        self.l1 = None
+        self.l2 = None
+        self.l3 = None
+        self.l4 = None
 
-        # data for animation
+        self.dtheta1 = None
+        self.dtheta2 = None
+
+        self.apath = []
+        self.bpath = []
+
+        # # data for animation
         # self.nframes = 121
-        # self.dronepath = np.zeros([self.nframes, 2])
-        # self.ballpath = np.zeros([self.nframes, 2])
-        # self.tmax = 1.5 * self.ball_speed / self.gc
-        # self.CalculateFlightPaths()
+        # # self.dronepath = np.zeros([self.nframes, 2])
+        # self.b0 = np.zeros([self.nframes, 2])
+        # self.a0 = np.zeros([self.nframes, 2])
+        # # self.theta2 +=self.dtheta1
+        # # self.CalculateFlightPaths()
 
-
-
-        # self.ra = 1
-        #
-        # self.hb = 2
-        # self.kb = 1
-        # self.rb = 0
-
-        # self.centera = None
-        # self.centerb = None
-
-        # self.links = [] # an empty list of links
-        # self.longest = -99999999
-        # self.longestLink = None
 
     # Don't change anything in ReadTrussData
     def ReadFourBarData(self, data):  # reads data from text file
@@ -164,9 +167,11 @@ class Fourbar:
 
         # test = np.zeros((3,3))
         alldata = []
-        for j in range(len(self.payload)):  # theres multiple sections of payloades so some how this line is supposed to sort through them
+        for j in range(len(
+                self.payload)):  # theres multiple sections of payloades so some how this line is supposed to sort through them
             vals = []
-            for i in range(2, len(self.payload[j]) - 1,2):  # this i is supposed to sort through the data once a payload row is selected
+            for i in range(2, len(self.payload[j]) - 1,
+                           2):  # this i is supposed to sort through the data once a payload row is selected
                 # if i > 1 and i % 2 == 0: #and i < self.payload-2:                 # based on order, if its odd it should be an x... even should be y...
                 x = self.payload[j][i]
                 y = self.payload[j][i + 1]
@@ -258,8 +263,8 @@ class Fourbar:
         self.ka = 1
         self.ra = 1
 
-        self.hb = 0
-        self.kb = 0
+        self.hb = 2
+        self.kb = 1
         self.rb = 0
 
         def solve(vars, args):
@@ -280,19 +285,45 @@ class Fourbar:
         args = [self.b0[0], self.b0[1], self.b1[0], self.b1[1], self.b2[0], self.b2[1]]
         self.hb, self.kb, self.rb = fsolve(solve, vars, args=args)
 
-        # self.l1 = self.ra
-        # self.l2 = sqrt((self.b0x + self.a0x) ** 2 + (self.b0y + self.a0y) ** 2)
-        # self.l3 = self.rb
-        # self.l4 = sqrt((self.ha + self.hb) ** 2 + (self.ka + self.kb) ** 2)
+        self.l1 = sqrt((self.ha + self.hb) ** 2 + (self.ka + self.kb) ** 2)
+        self.l2 = self.ra
+        self.l3 = sqrt((self.b0x + self.a0x) ** 2 + (self.b0y + self.a0y) ** 2)
+        self.l4 = self.rb
 
-        self.theta3 = atan2((self.a0y - self.ka), (self.a0x - self.ha)) * 180 / np.pi
-        self.theta4 = atan2((self.a2y - self.ka), (self.a2x - self.ha)) * 180 / np.pi
+        self.thetaInitial1 = atan2((self.a0y - self.ka), (self.a0x - self.ha)) * 180 / np.pi
+        self.thetaEnding1 = atan2((self.a2y - self.ka), (self.a2x - self.ha)) * 180 / np.pi
+
+        # self.thetaInitial2 = atan2((self.b0y - self.kb), (self.b0x - self.hb)) * 180 / np.pi
+        # self.thetaEnding2 = atan2((self.b2y - self.kb), (self.b2x - self.hb)) * 180 / np.pi
+
+        # self.dtheta1 = (self.thetaEnding1 - self.thetaInitial1) / self.nframes
+        # self.dtheta2 = (self.thetaEnding2 - self.thetaInitial2) / self.nframes
+
+    def calculate(self):
+        self.theta1 = atan2((self.ka - self.kb), (self.ha - self.hb))*(180/np.pi)
+
+        self.theta2 = atan2((self.a0y - self.ka), (self.a0x - self.ha))*(180/np.pi)
+
+        self.theta3 = atan2((self.b0y - self.a0y), (self.b0x - self.a0y))*(180/np.pi)
+        self.theta4 = atan2((self.kb - self.b0y), (self.hb - self.b0x))*(180/np.pi)
+
+        def ThetaSolver(vars, args):
+            [theta3, theta4] = vars
+            [l1, l2, l3, l4, theta1, theta2] = args
+
+            d = l1 * np.sin(theta1) + l2 * np.sin(theta2) + l3 * np.sin(theta3) + l4 * np.sin(theta4)
+            e = l1 * np.cos(theta1) + l2 * np.cos(theta2) + l3 * np.cos(theta3) + l4 * np.cos(theta4)
+            return d, e
+
+        vars = [self.theta3, self.theta4]
+        args = [self.l1, self.l2, self.l3, self.l4, self.theta1, self.theta2]
+        self.theta3, self.theta4 = fsolve(ThetaSolver, vars, args=args)  # ha = x, ka = y, r = radius of circle
+
 
     def CreateDraggingList(self):
-        draglist= [[self.a0x, self.a0y],
-                   [self.b0x, self.b0y]]
+        draglist = [[self.a0x, self.a0y],
+                    [self.b0x, self.b0y]]
         return draglist
-
 
     def DraggingListItemChanged(self, x, y, draglist, index):
         if index == 0:  # A Connection
@@ -320,48 +351,68 @@ class Fourbar:
     # def ShowConstruction(self, show)
     # if show is True...
 
-
-
-
     # Animation Stuff
 
-    def CalculateFlightPaths(self):
-        # This to draw the picture and during animation!
-        for frame in range(self.nframes):
-            time = self.tmax * frame / self.nframes
-            #newdriverpoints[] fill these with new x and y points depending on each frame
-            #for each nframe add .01 in loop to each point so that new driverpoints are being created
-            #rotate about center point eventually
+    # def CalculateFlightPaths(self):
+    #     # This to draw the picture and during animation!
+    #     for frame in range(self.nframes):
+    #         # time = self.tmax * frame / self.nframes
+    #         #newdriverpoints[] fill these with new x and y points depending on each frame
+    #         #for each nframe add .01 in loop to each point so that new driverpoints are being created
+    #         #rotate about center point eventually
+    #
+    #         # draglist points that are being animated
+    #
+    #         # self.dthetab = (self.thetaEnding - self.thetaInitial) / self.nframes
+    #         self.theta1 = atan2((self.ka - self.kb), (self.ha - self.hb)) * (180 / np.pi)
+    #
+    #         self.theta2 = atan2((self.a0y - self.ka), (self.a0x - self.ha)) * (180 / np.pi)
+    #
+    #         self.theta3 = atan2((self.b0y - self.a0y), (self.b0x - self.a0y)) * (180 / np.pi)
+    #         self.theta4 = atan2((self.kb - self.b0y), (self.hb - self.b0x)) * (180 / np.pi)
+    #
+    #         NewDriverPoints = []
+    #         for i in range(self.nframes):
+    #             self.theta2 += self.dtheta1
+    #             self.theta4 += self.dtheta2
+    #
+    #             self.a0x = self.ra*np.cos(self.theta2)
+    #             self.a0y = self.ra*np.sin(self.theta2)
+    #
+    #             self.b0x = self.rb*np.cos(self.theta4)
+    #             self.b0y = self.rb*np.cos(self.theta4)
+    #
+    #             self.a0 = np.array([self.a0x, self.a0y])
+    #             self.b0 = np.array([self.b0x, self.b0y])
+    #
+    #             # self.Translation()
+    #             # self.ThreeBarCircle()
+    #             # self.calculate()
+    #             # self.DrawTrussPicture()
+    #             NewDriverPoints.append([self.theta2, self.a0x,self.a0y])
+    #             points = np.array(NewDriverPoints)
+    #
+    #         for i in range(0, len(self.connections) - 1, 2):
+    #             glColor3f(1, .5, .3)  #
+    #             glLineWidth(1.5)
+    #             gl2DCircle(self.points[frame][i][0], self.points[frame][i][1], .015 * (abs(self.window[0]) + abs(self.window[1])),fill=True)
 
-            # draglist points that are being animated
-            NewDriverPoints = np.array()
-            for i in range(len(self.a0x)):
-                for j in range(len(self.a0x)):
-                    self.a0[i][j] +=
-                    self.[i][j][1] += p1y
-                    self.p2[i][j][0] += p2x
-                    self.p2[i][j][1] += p2y
+                # glColor3f(1, .5, .3)  #
+                # glLineWidth(1.5)
+                # gl2DCircle(self.bpath[i][0], self.bpath[i][1], .015 * (abs(self.window[0]) + abs(self.window[1])), fill=True)
 
-
-            ballx = self.barrel_x + self.ball_v0x * time
-            bally = self.barrel_y + self.ball_v0y * time - self.gc / 2 * time ** 2
-
-            self.dronepath[frame, :] = [dronex, self.drone_y]
-            self.ballpath[frame, :] = [ballx, bally]
         # end  def
 
         # finds frames for the payload to move through
 
-    def ConfigureAnimationFrame(self, frame, nframes):
-        self.drone_x = self.dronepath[frame, 0]  # driverlink
-        self.ball_x = self.ballpath[frame, 0]
-        self.ball_y = self.ballpath[frame, 1]
-        #self.a0x = newdriverpoints[frame, #]
-        #self.a0y =
-        #self.b0x =
-        #self.b0y =
-
-
+    # def ConfigureAnimationFrame(self, frame, nframes):
+    #     # self.drone_x = self.dronepath[frame, 0]  # driverlink
+    #     # self.ball_x = self.ballpath[frame, 0]
+    #     # self.ball_y = self.ballpath[frame, 1]
+    #     self.a0x = self.apath[frame, 0]
+    #     self.a0y = self.apath[frame, 1]
+    #     self.b0x = self.bpath[frame, 0]
+    #     self.b0y = self.bpath[frame, 1]
 
     def DrawTrussPicture(self):
         # this is what actually draws the picture

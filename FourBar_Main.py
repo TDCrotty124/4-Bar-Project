@@ -101,7 +101,7 @@ class main_window(QDialog):
 
     def AnimationCallback(self, frame, nframes):
         # calculations handled by DroneCapture class
-        self.mydrone.ConfigureAnimationFrame(frame, nframes)
+        self.fourbar.ConfigureAnimationFrame(frame, nframes)
         # the next line is absolutely required for pause, resume, stop, etc !!!
         app.processEvents()
 
@@ -118,7 +118,7 @@ class main_window(QDialog):
             self.fourbar.ThreeBarCircle()
             self.fourbar.DrawTrussPicture()
             self.glwindow1.glDraggingShowHandles()
-            self.fourbar.CalculateFlightPaths()
+            # self.fourbar.CalculateFlightPaths()
 
             t = self.fourbar
 
@@ -132,8 +132,8 @@ class main_window(QDialog):
             self.ui.lineEdit_b.setText('{:.2f}'.format(t.hb) + " , " + '{:.2f}'.format(t.kb))
 
             # Angles that are calculated from fsolve theta3 and theta4
-            self.ui.lineEdit_StartAngle.setText('{:.2f}'.format(t.theta3))
-            self.ui.lineEdit_EndAngle.setText('{:.2f}'.format(t.theta4))
+            self.ui.lineEdit_StartAngle.setText('{:.2f}'.format(t.thetaInitial1))
+            self.ui.lineEdit_EndAngle.setText('{:.2f}'.format(t.thetaEnding1))
 
 
     def draggingCallback(self, x, y, draglist, index):

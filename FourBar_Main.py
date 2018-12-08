@@ -88,22 +88,22 @@ class main_window(QDialog):
 
 
     # Animation Stuff
-    # def StartAnimation(self):  # a button to start GL Animation
-    #     self.glwindow1.glStartAnimation(self.AnimationCallback, self.mydrone.nframes,
-    #                                 reverse=False, repeat=False, reset=True,
-    #                                 RestartDraggingCallback=self.StartStopDragging)
-    #
-    # def StopAnimation(self):  # a button to Stop GL Animati0n
-    #     self.glwindow1.glStopAnimation()
-    #
-    # def PauseResumeAnimation(self):  # a button to Resume GL Animation
-    #     self.glwindow1.glPauseResumeAnimation()
-    #
-    # def AnimationCallback(self, frame, nframes):
-    #     # calculations handled by DroneCapture class
-    #     self.mydrone.ConfigureAnimationFrame(frame, nframes)
-    #     # the next line is absolutely required for pause, resume, stop, etc !!!
-    #     app.processEvents()
+    def StartAnimation(self):  # a button to start GL Animation
+        self.glwindow1.glStartAnimation(self.AnimationCallback, self.mydrone.nframes,
+                                    reverse=False, repeat=False, reset=True,
+                                    RestartDraggingCallback=self.StartStopDragging)
+
+    def StopAnimation(self):  # a button to Stop GL Animati0n
+        self.glwindow1.glStopAnimation()
+
+    def PauseResumeAnimation(self):  # a button to Resume GL Animation
+        self.glwindow1.glPauseResumeAnimation()
+
+    def AnimationCallback(self, frame, nframes):
+        # calculations handled by DroneCapture class
+        self.mydrone.ConfigureAnimationFrame(frame, nframes)
+        # the next line is absolutely required for pause, resume, stop, etc !!!
+        app.processEvents()
 
 
     def eventFilter(self, source, event):  # allow GL to handle Mouse Events

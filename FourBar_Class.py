@@ -50,8 +50,21 @@ class Fourbar:
         self.b0x = None
         self.b0y = None
 
+        self.a1x = None
+        self.a1y = None
+        self.b1x = None
+        self.b1y = None
+
+        self.a2x = None
+        self.a2y = None
+        self.b2x = None
+        self.b2y = None
+
         self.newx = None
         self.newy = None
+
+        self.theta3 = None
+        self.theta4 = None
         # self.ra = 1
         #
         # self.hb = 2
@@ -220,6 +233,16 @@ class Fourbar:
         self.b2[0] += p2x
         self.b2[1] += p2y
 
+        self.a1x = self.a1[0]
+        self.a1y = self.a1[1]
+        self.b1x = self.b1[0]
+        self.b1y = self.b1[1]
+
+        self.a2x = self.a2[0]
+        self.a2y = self.a2[1]
+        self.b2x = self.b2[0]
+        self.b2y = self.b2[1]
+
                 # math studd to calculate positions
 
                 # newpayload.append(newpayloadxy)
@@ -253,22 +276,22 @@ class Fourbar:
         args = [self.b0[0], self.b0[1], self.b1[0], self.b1[1], self.b2[0], self.b2[1]]
         self.hb, self.kb, self.rb = fsolve(solve, vars, args=args)
 
-        # self.centera = ([self.ha, self.ka])
-        # self.centerb = ([self.hb, self.kb])
+        self.theta3 = atan2((self.a0y - self.ka), (self.a0x - self.ha)) * 180 / np.pi
+        self.theta4 = atan2((self.a2y - self.ka), (self.a2x - self.ha)) * 180 / np.pi
 
     def CreateDraggingList(self):
-        draglist= [[self.a0[0], self.a0[1]],
-                   [self.b0[0], self.b0[1]]]
+        draglist= [[self.a0x, self.a0y],
+                   [self.b0x, self.b0y]]
         return draglist
 
 
     def DraggingListItemChanged(self, x, y, draglist, index):
         if index == 0:  # A Connection
-            self.a0[0], self.a0[1] = [x, y]
+            self.a0x, self.a0y = [x, y]
             draglist[0] = [x, y]
 
         if index == 1:  # B Connection
-            self.b0[0], self.b0[1] = [x, y]
+            self.b0x, self.b0y = [x, y]
             draglist[1] = [x, y]
 
         self.Translation()

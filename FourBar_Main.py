@@ -87,6 +87,45 @@ class main_window(QDialog):
         self.glwindow1.glHandleMouseEvents(event)  # let GL handle the event
         return super(QDialog, self).eventFilter(source, event)
 
+    def DrawingCallback(self):
+        # this is what actually draws the picture
+        if self.fourbar is not None:
+            # Fourbar()
+            self.fourbar.Translation()
+            self.fourbar.ThreeBarCircle()
+            self.fourbar.DrawTrussPicture()
+            self.glwindow1.glDraggingShowHandles()
+
+            t = self.fourbar
+
+            # fill the small text boxes
+            # initial point A and point B
+            self.ui.lineEdit_a0.setText('{:.2f}'.format(t.a0x) + " , " + '{:.2f}'.format(t.a0y))
+            self.ui.lineEdit_b0.setText('{:.2f}'.format(t.b0x) + " , " + '{:.2f}'.format(t.b0y))
+
+            # Black dots -- different positions as the black dots move
+            self.ui.lineEdit_a.setText('{:.2f}'.format(t.ha) + " , " + '{:.2f}'.format(t.ka))
+            self.ui.lineEdit_b.setText('{:.2f}'.format(t.hb) + " , " + '{:.2f}'.format(t.kb))
+
+            # Angles that are calculated from fsolve theta3 and theta4
+            self.ui.lineEdit_StartAngle.setText('{:.2f}'.format(t.theta3))
+            self.ui.lineEdit_EndAngle.setText('{:.2f}'.format(t.theta4))
+
+    def draggingCallback(self, x, y, draglist, index):
+        # calculations by class
+        self.fourbar.DraggingListItemChanged(x, y, draglist, index)
+        return
+
+    def StartStopDragging(self, start):  # needs problem specific customization!
+        if start is True:
+            draglist = self.fourbar.CreateDraggingList()
+            near = 15  # define an acceptable mouse distance for dragging
+            self.glwindow1.glStartDragging(self.draggingCallback, draglist, near,
+                                           handlesize=.1, handlewidth=.01, handlecolor=[1, 0, 1])
+            self.ui.checkBox_Dragging.setChecked(True)
+        elif start is False:
+            self.glwindow1.glStopDragging()
+            self.ui.checkBox_Dragging.setChecked(False)
 
     # Setup OpenGL Drawing and Viewing
     def setupGLWindows(self):  # setup all GL windows
@@ -103,49 +142,6 @@ class main_window(QDialog):
         # OPTIONAL: to display the mouse location  - the name of the TextBox
         self.glwindow1.glMouseDisplayTextBox(self.ui.MouseLocation)
 
-
-
-    def DrawingCallback(self):
-        # this is what actually draws the picture
-        if self.fourbar is not None:
-            # Fourbar()
-            self.fourbar.Translation()
-            self.fourbar.ThreeBarCircle()
-            self.fourbar.DrawTrussPicture()
-
-            t = self.fourbar
-
-            # fill the small text boxes
-            # initial point A and point B
-            self.ui.lineEdit_a0.setText('{:.2f}'.format(t.a0[0]) + " , " + '{:.2f}'.format(t.a0[1]))
-            self.ui.lineEdit_b0.setText('{:.2f}'.format(t.a0[0]) + " , " + '{:.2f}'.format(t.a0[1]))
-
-            # Black dots -- different positions as the black dots move
-            self.ui.lineEdit_a.setText('{:.2f}'.format(t.ha) + " , " + '{:.2f}'.format(t.ka))
-            self.ui.lineEdit_b.setText('{:.2f}'.format(t.hb) + " , " + '{:.2f}'.format(t.kb))
-
-            # Angles that are calculated from fsolve theta3 and theta4
-            self.ui.lineEdit_StartAngle.setText('{:.2f}'.format(t.positions[4]))
-            self.ui.lineEdit_EndAngle.setText('{:.2f}'.format(t.positions[7]))
-
-        self.glwindow1.glDraggingShowHandles()
-
-
-    def draggingCallback(self, x, y, draglist, index):
-        # calculations by class
-        self.fourbar.DraggingListItemChanged(x, y, draglist, index)
-        return
-
-    def StartStopDragging(self, start):  # needs problem specific customization!
-        if start is True:
-            draglist = self.fourbar.CreateDraggingList()
-            near = .05  # define an acceptable mouse distance for dragging
-            self.glwindow1.glStartDragging(self.draggingCallback, draglist, near,
-                                           handlesize=.1, handlewidth=.01, handlecolor=[1, 0, 1])
-            self.ui.checkBox_Dragging.setChecked(True)
-        elif start is False:
-            self.glwindow1.glStopDragging()
-            self.ui.checkBox_Dragging.setChecked(False)
 
 
     # def ShowConstruction(self, show)

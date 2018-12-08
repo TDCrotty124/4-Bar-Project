@@ -11,13 +11,12 @@ from math import *
 from scipy.optimize import fsolve
 
 
+
 class style:
     def __init__(self):
         self.name = None
         self.rgb = None
         self.width = None
-
-
 # class values:
 # #     def __init__(self):
 # #         self.name = None
@@ -51,22 +50,8 @@ class Fourbar:
         self.b0x = None
         self.b0y = None
 
-        self.a1x = None
-        self.a1y = None
-        self.b1x = None
-        self.b1y = None
-
-        self.a2x = None
-        self.a2y = None
-        self.b2x = None
-        self.b2y = None
-
         self.newx = None
         self.newy = None
-
-        self.theta3 = None
-        self.theta4 = None
-
         # self.ra = 1
         #
         # self.hb = 2
@@ -75,6 +60,8 @@ class Fourbar:
 
         # self.centera = None
         # self.centerb = None
+
+
 
         # self.links = [] # an empty list of links
         # self.longest = -99999999
@@ -180,6 +167,8 @@ class Fourbar:
         self.b1 = deepcopy(self.b0)
         self.b2 = deepcopy(self.b0)
 
+
+
         # Translate to origin
         for i in range(len(self.p1)):
             for j in range(len(self.p1[i])):
@@ -211,6 +200,7 @@ class Fourbar:
         self.a2 = np.matmul(self.a2, rotate2)
         self.b2 = np.matmul(self.b2, rotate2)
 
+
         # Currently both at origin and rotated
 
         for i in range(len(self.p1)):
@@ -230,19 +220,10 @@ class Fourbar:
         self.b2[0] += p2x
         self.b2[1] += p2y
 
-        self.a1x = self.a1[0]
-        self.a1y = self.a1[1]
-        self.b1x = self.b1[0]
-        self.b1y = self.b1[1]
+                # math studd to calculate positions
 
-        self.a2x = self.a2[0]
-        self.a2y = self.a2[1]
-        self.b2x = self.b2[0]
-        self.b2y = self.b2[1]
+                # newpayload.append(newpayloadxy)
 
-        # math studd to calculate positions
-
-        # newpayload.append(newpayloadxy)
 
     def ThreeBarCircle(self):
         # initial guesses
@@ -250,8 +231,8 @@ class Fourbar:
         self.ka = 1
         self.ra = 1
 
-        self.hb = 0
-        self.kb = 0
+        self.hb = 2
+        self.kb = 1
         self.rb = 0
 
         def solve(vars, args):
@@ -266,49 +247,34 @@ class Fourbar:
 
         vars = [self.ha, self.ka, self.ra]
         args = [self.a0[0], self.a0[1], self.a1[0], self.a1[1], self.a2[0], self.a2[1]]
-        self.ha, self.ka, self.ra = fsolve(solve, vars, args=args)  # ha = x, ka = y, r = radius of circle
+        self.ha, self.ka, self.ra = fsolve(solve, vars, args=args)      # ha = x, ka = y, r = radius of circle
 
         vars = [self.hb, self.kb, self.rb]
         args = [self.b0[0], self.b0[1], self.b1[0], self.b1[1], self.b2[0], self.b2[1]]
         self.hb, self.kb, self.rb = fsolve(solve, vars, args=args)
 
-        # self.l1 = self.ra
-        # self.l2 = sqrt((self.b0x + self.a0x) ** 2 + (self.b0y + self.a0y) ** 2)
-        # self.l3 = self.rb
-        # self.l4 = sqrt((self.ha + self.hb) ** 2 + (self.ka + self.kb) ** 2)
-
-        self.theta3 = atan2((self.a0y - self.ka), (self.a0x - self.ha)) * 180 / np.pi
-        self.theta4 = atan2((self.a2y - self.ka), (self.a2x - self.ha)) * 180 / np.pi
+        # self.centera = ([self.ha, self.ka])
+        # self.centerb = ([self.hb, self.kb])
 
     def CreateDraggingList(self):
-        draglist = [[self.ha, self.ka],
-                    [self.hb, self.kb]]
+        draglist= [[self.a0[0], self.a0[1]],
+                   [self.b0[0], self.b0[1]]]
         return draglist
+
 
     def DraggingListItemChanged(self, x, y, draglist, index):
         if index == 0:  # A Connection
-            self.ha, self.ka = [x, y]
+            self.a0[0], self.a0[1] = [x, y]
             draglist[0] = [x, y]
 
         if index == 1:  # B Connection
-            self.hb, self.kb = [x, y]
+            self.b0[0], self.b0[1] = [x, y]
             draglist[1] = [x, y]
 
+        self.Translation()
         self.ThreeBarCircle()
 
-    def draggingCallback(self, start):
-        if start is True:
-            draglist = self.fourbar.CreateDraggingList()
-            near = 15
-            self.glwindow1.g1StartDragging(self.draggingCallback, draglist, near, handlesize=.1, handlewidth=1,
-                                           handlecolor=[1, 0, 1])
-            self.ui.dragging.setChecked(False)
-        elif start is False:
-            self.glwindow1.glStopDragging()
-            self.ui.dragging.setChecked(False)
 
-    # def ShowConstruction(self, show)
-    # if show is True...
 
     def DrawTrussPicture(self):
         # this is what actually draws the picture
@@ -417,7 +383,7 @@ class Fourbar:
         glVertex2f(self.b0[0], self.b0[1])
         glEnd()
 
-        # test for sports wing
+        #test for sports wing
 
         # glColor3f(.2, .8, 1)  #
         # glLineWidth(1.5)
@@ -426,3 +392,14 @@ class Fourbar:
         # glColor3f(.2, .8, 1)  #
         # glLineWidth(1.5)
         # gl2DCircle(4.3,1.7,.018,fill=True)
+
+
+
+
+
+
+
+
+
+
+

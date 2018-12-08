@@ -53,7 +53,7 @@ class main_window(QDialog):
         self.ui.horizontalSlider_zoom.valueChanged.connect(self.glZoomSlider)
         self.ui.pushButton_Select.clicked.connect(self.GetFourbar)
         self.ui.pushButton_SwapLinks.clicked.connect(self.SwitchLinks)
-
+        self.ui.checkBox_Dragging.stateChanged.connect(self.DraggingOnOff)
         # Widget callbacks start here
 
     def SwitchLinks(self):
@@ -75,6 +75,12 @@ class main_window(QDialog):
         zoomval = float((self.ui.horizontalSlider_zoom.value()) / 200 + 0.25)
         self.glwindow1.glZoom(zoomval)  # set the zoom value
         self.glwindow1.glUpdate()  # update the GL image
+
+    def DraggingOnOff(self):  # used a checkbox to Enable GL Dragging
+        if self.ui.checkBox_Dragging.isChecked():  # start dragging
+            self.StartStopDragging(True)  # StartStopDragging is defined below
+        else:  # stop dragging
+            self.StartStopDragging(False)
 
 
     def eventFilter(self, source, event):  # allow GL to handle Mouse Events
@@ -119,14 +125,31 @@ class main_window(QDialog):
             self.ui.lineEdit_b.setText('{:.2f}'.format(t.hb) + " , " + '{:.2f}'.format(t.kb))
 
             # Angles that are calculated from fsolve theta3 and theta4
-            self.ui.lineEdit_StartAngle.setText('{:.2f}'.format(t.theta3))
-            self.ui.lineEdit_EndAngle.setText('{:.2f}'.format(t.theta4))
-
-
-
+            self.ui.lineEdit_StartAngle.setText('{:.2f}'.format(t.positions[4]))
+            self.ui.lineEdit_EndAngle.setText('{:.2f}'.format(t.positions[7]))
 
         self.glwindow1.glDraggingShowHandles()
 
+
+    def draggingCallback(self, x, y, draglist, index):
+        # calculations by class
+        self.fourbar.DraggingListItemChanged(x, y, draglist, index)
+        return
+
+    def StartStopDragging(self, start):  # needs problem specific customization!
+        if start is True:
+            draglist = self.fourbar.CreateDraggingList()
+            near = .05  # define an acceptable mouse distance for dragging
+            self.glwindow1.glStartDragging(self.draggingCallback, draglist, near,
+                                           handlesize=.1, handlewidth=.01, handlecolor=[1, 0, 1])
+            self.ui.checkBox_Dragging.setChecked(True)
+        elif start is False:
+            self.glwindow1.glStopDragging()
+            self.ui.checkBox_Dragging.setChecked(False)
+
+
+    # def ShowConstruction(self, show)
+    # if show is True...
 
     def GetFourbar(self):
         # get the filename using the OPEN dialog

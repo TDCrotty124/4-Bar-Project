@@ -52,12 +52,8 @@ class main_window(QDialog):
         self.ui.pushButton_Exit.clicked.connect(self.ExitApp)
         self.ui.horizontalSlider_zoom.valueChanged.connect(self.glZoomSlider)
         self.ui.pushButton_Select.clicked.connect(self.GetFourbar)
-        self.ui.checkBox_Dragging.stateChanged.connect(self.DraggingOnOff)
         self.ui.pushButton_SwapLinks.clicked.connect(self.SwitchLinks)
-        # self.ui.pushButton_Start.clicked.connect(self.StartAnimation)
-        # self.ui.pushButton_Stop.clicked.connect(self.StopAnimation)
-        # self.ui.pushButton_PauseResume.clicked.connect(self.PauseResumeAnimation)
-
+        self.ui.checkBox_Dragging.stateChanged.connect(self.DraggingOnOff)
         # Widget callbacks start here
 
     def SwitchLinks(self):
@@ -87,25 +83,6 @@ class main_window(QDialog):
             self.StartStopDragging(False)
 
 
-    # Animation Stuff
-    # def StartAnimation(self):  # a button to start GL Animation
-    #     self.glwindow1.glStartAnimation(self.AnimationCallback, self.mydrone.nframes,
-    #                                 reverse=False, repeat=False, reset=True,
-    #                                 RestartDraggingCallback=self.StartStopDragging)
-    #
-    # def StopAnimation(self):  # a button to Stop GL Animati0n
-    #     self.glwindow1.glStopAnimation()
-    #
-    # def PauseResumeAnimation(self):  # a button to Resume GL Animation
-    #     self.glwindow1.glPauseResumeAnimation()
-    #
-    # def AnimationCallback(self, frame, nframes):
-    #     # calculations handled by DroneCapture class
-    #     self.mydrone.ConfigureAnimationFrame(frame, nframes)
-    #     # the next line is absolutely required for pause, resume, stop, etc !!!
-    #     app.processEvents()
-
-
     def eventFilter(self, source, event):  # allow GL to handle Mouse Events
         self.glwindow1.glHandleMouseEvents(event)  # let GL handle the event
         return super(QDialog, self).eventFilter(source, event)
@@ -116,6 +93,7 @@ class main_window(QDialog):
             # Fourbar()
             self.fourbar.Translation()
             self.fourbar.ThreeBarCircle()
+            self.fourbar.calculate()
             self.fourbar.DrawTrussPicture()
             self.glwindow1.glDraggingShowHandles()
 
@@ -123,17 +101,16 @@ class main_window(QDialog):
 
             # fill the small text boxes
             # initial point A and point B
-            self.ui.lineEdit_a0.setText('{:.2f}'.format(t.a0[0]) + " , " + '{:.2f}'.format(t.a0[1]))
-            self.ui.lineEdit_b0.setText('{:.2f}'.format(t.a0[0]) + " , " + '{:.2f}'.format(t.a0[1]))
+            self.ui.lineEdit_a0.setText('{:.2f}'.format(t.a0x) + " , " + '{:.2f}'.format(t.a0y))
+            self.ui.lineEdit_b0.setText('{:.2f}'.format(t.b0x) + " , " + '{:.2f}'.format(t.b0y))
 
             # Black dots -- different positions as the black dots move
             self.ui.lineEdit_a.setText('{:.2f}'.format(t.ha) + " , " + '{:.2f}'.format(t.ka))
             self.ui.lineEdit_b.setText('{:.2f}'.format(t.hb) + " , " + '{:.2f}'.format(t.kb))
 
             # Angles that are calculated from fsolve theta3 and theta4
-            self.ui.lineEdit_StartAngle.setText('{:.2f}'.format(t.theta3))
-            self.ui.lineEdit_EndAngle.setText('{:.2f}'.format(t.theta4))
-
+            self.ui.lineEdit_StartAngle.setText('{:.2f}'.format(t.thetaInitial))
+            self.ui.lineEdit_EndAngle.setText('{:.2f}'.format(t.thetaEnding))
 
     def draggingCallback(self, x, y, draglist, index):
         # calculations by class
@@ -143,17 +120,13 @@ class main_window(QDialog):
     def StartStopDragging(self, start):  # needs problem specific customization!
         if start is True:
             draglist = self.fourbar.CreateDraggingList()
-            near = .05  # define an acceptable mouse distance for dragging
+            near = 15  # define an acceptable mouse distance for dragging
             self.glwindow1.glStartDragging(self.draggingCallback, draglist, near,
                                            handlesize=.1, handlewidth=.01, handlecolor=[1, 0, 1])
             self.ui.checkBox_Dragging.setChecked(True)
         elif start is False:
             self.glwindow1.glStopDragging()
             self.ui.checkBox_Dragging.setChecked(False)
-
-    # def ShowConstruction(self, show)
-    # if show is True...
-
 
     # Setup OpenGL Drawing and Viewing
     def setupGLWindows(self):  # setup all GL windows
@@ -170,6 +143,10 @@ class main_window(QDialog):
         # OPTIONAL: to display the mouse location  - the name of the TextBox
         self.glwindow1.glMouseDisplayTextBox(self.ui.MouseLocation)
 
+
+
+    # def ShowConstruction(self, show)
+    # if show is True...
 
     def GetFourbar(self):
         # get the filename using the OPEN dialog
@@ -190,6 +167,15 @@ class main_window(QDialog):
         t = self.fourbar  # a shorter name for convenience
 
         t.ReadFourBarData(data)
+
+        # rpt = t.GenerateReport()
+
+        # put the report in the large TextBox
+        # self.ui.textEdit_Report.setText(rpt)
+
+
+
+
 
 
         # self.ui.lineEdit_a0.setText('{:.2f}'.format(t.centera))

@@ -25,7 +25,7 @@ class style:
 # #         self.angle = None
 
 
-class Fourbar:
+class Fourbar:   #initializing
     def __init__(self, ):
         self.linestyle = []
         self.connections = []
@@ -96,14 +96,14 @@ class Fourbar:
         for line in data:  # loop over all the lines
             cells = line.strip().split(',')
             keyword = cells[0].lower()
-
+            # searching for all the keywords and gather information from text file
             if keyword == 'title': self.title = cells[1].replace("'", "")
-            if keyword == 'connections':
+            if keyword == 'connections':       # keyword for connections
                 for con in cells[1:]:
                     ans = float(con.replace("(", "").replace(")", ""))
                     self.connections.append(ans)
 
-            if keyword == 'linestyle':
+            if keyword == 'linestyle':  # keyword for linestyle
                 this_name = [cells[1].replace("'", "").replace(" ", "")]
                 ncells = len(cells)
                 for cell in cells[2:]:
@@ -111,7 +111,7 @@ class Fourbar:
                     this_name.append(value)
                 self.linestyle.append(this_name)
 
-            if keyword == 'payload':
+            if keyword == 'payload':    # keyword for payload
                 this_name = [cells[1].replace("'", "").replace(" ", "")]
                 this_name.append(cells[2].replace(" ", ""))
                 ncells = len(cells)
@@ -120,12 +120,12 @@ class Fourbar:
                     this_name.append(value)
                 self.payload.append(this_name)
 
-            if keyword == 'positions':
+            if keyword == 'positions':  # keyword for positions
                 for pos in cells[1:]:
                     ans = float(pos.replace("(", "").replace(")", ""))
                     self.positions.append(ans)
 
-            if keyword == 'boundary':
+            if keyword == 'boundary':   # keyword for boundary
                 this_name = [cells[1].replace("'", "").replace(" ", "")]
                 this_name.append(cells[2].replace(" ", ""))
                 ncells = len(cells)
@@ -134,7 +134,7 @@ class Fourbar:
                     this_name.append(value)
                 self.boundary.append(this_name)
 
-            if keyword == 'window':
+            if keyword == 'window': # keyword for window
                 for win in cells[1:]:
                     ans = float(win.replace("(", "").replace(")", ""))
                     self.window.append(ans)
@@ -146,8 +146,8 @@ class Fourbar:
         self.a0 = np.array([self.a0x, self.a0y])
         self.b0 = np.array([self.b0x, self.b0y])
 
-    def Translation(self):
-        p0x = self.positions[0]
+    def Translation(self):      # function that calculates for the translation of the points
+        p0x = self.positions[0]     # name shortening
         p0y = self.positions[1]
         p1x = self.positions[2]
         p1y = self.positions[3]
@@ -159,7 +159,7 @@ class Fourbar:
         p1 = np.array([p1x, p1y])
         p2 = np.array([p2x, p2y])
 
-        self.a0 = np.array([self.a0x, self.a0y])
+        self.a0 = np.array([self.a0x, self.a0y])    #putting a0 and b0 into an array
         self.b0 = np.array([self.b0x, self.b0y])
 
         # test = np.zeros((3,3))
@@ -178,7 +178,7 @@ class Fourbar:
             vals_numpy = np.array(vals)
             alldata.append(vals_numpy)
 
-        self.p0 = deepcopy(alldata)
+        self.p0 = deepcopy(alldata)  # storing all these values in a deepcopy
         self.p1 = deepcopy(alldata)
         self.p2 = deepcopy(alldata)
 
@@ -250,9 +250,6 @@ class Fourbar:
         self.b2x = self.b2[0]
         self.b2y = self.b2[1]
 
-        # math studd to calculate positions
-
-        # newpayload.append(newpayloadxy)
 
     def ThreeBarCircle(self):
         # initial guesses
@@ -264,10 +261,10 @@ class Fourbar:
         self.kb = 0
         self.rb = 0
 
-        def solve(vars, args):
+        def solve(vars, args):  # assigning list of arguments and variables
             [h, k, r] = vars
             [x0, y0, x1, y1, x2, y2] = args
-
+            #equations for a circle
             a = sqrt(((x0 - h) ** 2) + ((y0 - k) ** 2)) - r
             b = sqrt(((x1 - h) ** 2) + ((y1 - k) ** 2)) - r
             c = sqrt(((x2 - h) ** 2) + ((y2 - k) ** 2)) - r
@@ -290,14 +287,14 @@ class Fourbar:
         self.theta3 = atan2((self.a0y - self.ka), (self.a0x - self.ha)) * 180 / np.pi
         self.theta4 = atan2((self.a2y - self.ka), (self.a2x - self.ha)) * 180 / np.pi
 
-    def CreateDraggingList(self):
+    def CreateDraggingList(self):  # creating the list for the points that will be dragged (x,y coordinates of the points)
         draglist= [[self.a0x, self.a0y],
                    [self.b0x, self.b0y]]
         return draglist
 
 
-    def DraggingListItemChanged(self, x, y, draglist, index):
-        if index == 0:  # A Connection
+    def DraggingListItemChanged(self, x, y, draglist, index):  # connecting the diamond that shows when dragging is enabled
+        if index == 0:  # A Connection                         # to the points on the object that are part of the fourbar
             self.a0x, self.a0y = [x, y]
             draglist[0] = [x, y]
 
@@ -305,7 +302,7 @@ class Fourbar:
             self.b0x, self.b0y = [x, y]
             draglist[1] = [x, y]
 
-        self.Translation()
+        self.Translation()      #recalling the equations to continually adjust for the repositioning
         self.ThreeBarCircle()
 
     # def draggingCallback(self, start):
